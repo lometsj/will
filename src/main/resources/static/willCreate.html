@@ -6,18 +6,83 @@
     <script type="application/javascript" src="webjars/jquery/3.4.1/jquery.js"></script>
 </head>
 <body>
-    <h1></h1>
-    <input type="file">
-    <template>
+    <h1 id="hello"></h1>
+    <a href="/logOut">log out</a>
+    <input type="file" id="pdf_file"><br>
+    <div id="contain">
+
+    </div>
+    <template id="tem">
         <p id="pdf_name"></p>
-        <button id="check">check</button>
-        <button id="delete">delete</button>
+        <a id="check" href="/checkFile">check</a>
+        <a id="delete" href="/deleteFile">delete</a>
     </template>
-    <input type="password" placeholder="view pwd">
+    <input id="password" type="password" placeholder="view pwd">
     <button id="save">save</button>
 </body>
 
 <script>
+    $('#save').click(function () {
+        let formData = new FormData()
+        let pwd = $('#password').val()
+        formData.append('file', $('#pdf_file')[0].files[0])
+        formData.append('pwd', pwd)
+
+        $.ajax({
+            type: "POST",
+            url: "/api/upload",
+            cache: false,
+            timeout: 600000,
+            data: formData,
+            contentType: false,
+            dataType: 'json',
+            processData: false,
+            success: function (data) {
+                alert(data.ret)
+                if(data.ret === 'succeed'){
+                    window.location.reload()
+                }
+            },
+            error: function (e) {
+                alert(error)
+            }
+        })
+    })
+
+    $.ajax({
+        type: "POST",
+        url: "/api/getFilenameByName",
+        cache: false,
+        timeout: 600000,
+        contentType: false,
+        dataType: 'json',
+        success: function (data) {
+            let tem = document.querySelector('#tem')
+            tem.content.querySelector('#pdf_name').textContent = data.ret
+            tem.content.querySelector('#check').href += '/' + data.ret
+            let clone = document.importNode(tem.content, true)
+            let con = document.querySelector('#contain')
+            con.appendChild(clone)
+
+        },
+        error: function (e) {
+            alert(error)
+        }
+    })
+
+    $.ajax({
+        type: "POST",
+        url: "/api/getName",
+        cache: false,
+        timeout: 600000,
+        dataType: 'json',
+        success: function (data) {
+            $('#hello').text(data.ret)
+        },
+        error: function (e) {
+            alert(e)
+        }
+    })
 
 </script>
 </html>
