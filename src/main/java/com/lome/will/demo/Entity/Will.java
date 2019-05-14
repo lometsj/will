@@ -15,6 +15,9 @@ public class Will {
     private Long id;
 
     @NotNull
+    private String userName;
+
+    @NotNull
     private String pdf;
 
     @NotNull
@@ -53,5 +56,13 @@ public class Will {
 
     public void setCreatetime(Timestamp createtime) {
         this.createtime = createtime;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 }

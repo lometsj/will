@@ -36,5 +36,29 @@ public class UserService {
         return userRepo.findAllByName(name).get(0);
     }
 
+    public String singIn(String name, String pwd, String type){
+        if(userRepo.findAllByName(name).size() == 0){
+            return "user not exist";
+        }
+        else{
+
+            User temp = userRepo.findAllByName(name).get(0);
+            if (!temp.getPwd().equals(pwd)){
+                return "username or password is incorrect";
+
+            }else if (!temp.getType().equals(type)){
+                return "username or type is incorrect";
+            }
+        }
+        return "succeed";
+    }
+
+    public String getTypeByName(String name){
+        if(userRepo.findAllByName(name).size() == 0){
+            return "user not exist";
+        }else{
+            return userRepo.findAllByName(name).get(0).getType();
+        }
+    }
 
 }

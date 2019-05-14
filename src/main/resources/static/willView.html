@@ -3,9 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <script type="application/javascript" src="webjars/jquery/3.4.1/jquery.js"></script>
+
 </head>
 <body>
-    <input type="password" placeholder="input view password">
-    <input type="text" placeholder="testator name">
+    <h1 id="hello"></h1>
+    <a href="/logOut">log out</a>
+    <input type="password" placeholder="input view password" id="pwd">
+    <input type="text" placeholder="testator name" id="name">
+    <button id="search">search</button><br>
+    <div id="contain">
+
+    </div>
+    <template id="tem">
+        <p id="pdf_name"></p>
+        <a id="check" href="/checkFile">check</a>
+    </template>
 </body>
+
+<script>
+    $('#search').click(function () {
+        let search = {}
+        search['name'] = $('#name').val()
+        search['pwd'] = $('#pwd').val()
+        console.log(search)
+        $.ajax({
+            type: "POST",
+            url: "/api/getFilenameByNameAndPwd",
+            cache: false,
+            timeout: 600000,
+            data: JSON.stringify(search),
+            contentType: "application/json",
+            dataType: 'json',
+            success: function (data) {
+                let tem = document.querySelector('#tem')
+                tem.content.querySelector('#pdf_name').textContent = data.ret
+                tem.content.querySelector('#check').href += '/' + data.ret
+                let clone = document.importNode(tem.content, true)
+                let con = document.querySelector('#contain')
+                con.appendChild(clone)
+
+            },
+            error: function (e) {
+                alert(e)
+            }
+        })
+    })
+
+    $.ajax({
+        type: "POST",
+        url: "/api/getName",
+        cache: false,
+        timeout: 600000,
+        dataType: 'json',
+        success: function (data) {
+            $('#hello').text(data.ret)
+        },
+        error: function (e) {
+            alert(e)
+        }
+    })
+
+</script>
 </html>
