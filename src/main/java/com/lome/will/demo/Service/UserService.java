@@ -61,4 +61,8 @@ public class UserService {
         }
     }
 
+    public Long getIdByName(String name){
+        return userRepo.findByName(name).getId();
+    }
+
 }

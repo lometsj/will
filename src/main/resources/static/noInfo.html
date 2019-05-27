@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="webjars/bootstrap/3.3.5/css/bootstrap.css">
+    <script type="application/javascript" src="webjars/jquery/3.4.1/jquery.js"></script>
+    <script src="webjars/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+
+</head>
+<body>
+    从业编号：<input id="num">
+    <template id="office">
+        <button class="name"></button>
+    </template>
+    <div id="contain">
+
+    </div>
+    <p id="off"></p>
+    <button id="submit">submit</button>
+</body>
+
+<script>
+
+
+    $.ajax({
+        type: "POST",
+        url: "/api/getOfiices",
+        cache: false,
+        timeout: 600000,
+        dataType: 'json',
+        success: function (data) {
+            let tem = document.querySelector('#office')
+            for(let i = 0; i < data.length; i++){
+                tem.content.querySelector('.name').textContent = data[i]
+                let clone = document.importNode(tem.content, true)
+                let con = document.querySelector('#contain')
+                con.appendChild(clone)
+            }
+            $('.name').click(function () {
+                $('#off').html($(this).html())
+            })
+        },
+        error: function (e) {
+            alert(e)
+        }
+    })
+
+    $('#submit').click(function () {
+        let data = {}
+        data['num'] = $('#num').val()
+        data['office'] = $('#off').html()
+
+        $.ajax({
+            type: "POST",
+            url: "/api/uploadOffice",
+            cache: false,
+            timeout: 600000,
+            data: JSON.stringify(data),
+            contentType: "application/json",
+            success: function () {
+                window.location.reload()
+            },
+            error: function (e) {
+                alert(e)
+            }
+        })
+
+    })
+
+
+
+
+
+</script>
+</html>

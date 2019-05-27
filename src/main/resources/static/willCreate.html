@@ -3,22 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" href="webjars/bootstrap/3.3.5/css/bootstrap.css">
     <script type="application/javascript" src="webjars/jquery/3.4.1/jquery.js"></script>
+    <script src="webjars/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
 </head>
 <body>
     <h1 id="hello"></h1>
     <a href="/logOut">log out</a>
     <input type="file" id="pdf_file"><br>
-    <div id="contain">
+    <div id="contain" class="card">
 
     </div>
+
     <template id="tem">
         <p id="pdf_name"></p>
         <a id="check" href="/checkFile">check</a>
         <a id="delete" href="/deleteFile">delete</a>
     </template>
+
+    <div id="contain2" class="card">
+
+    </div>
+
+    <template id="mes">
+        <p id="mes_content"></p>
+    </template>
+
+
     <input id="password" type="password" placeholder="view pwd">
     <button id="save">save</button>
+    <br>
+    <div>
+        <p>message:</p>
+        <input id="mess_input" type="text">
+        <button id="mess_sub">submit</button>
+    </div>
 </body>
 
 <script>
@@ -84,5 +104,46 @@
         }
     })
 
+    $.ajax({
+        type: "POST",
+        url: "/api/getMess",
+        cache: false,
+        timeout: 600000,
+        dataType: 'json',
+        success: function (data) {
+            let mes = document.querySelector('#mes')
+            for(let i = 0; i < data.length; i++){
+                mes.content.querySelector('#mes_content').textContent = data[i]
+                let clone = document.importNode(mes.content, true)
+                let con2 = document.querySelector('#contain2')
+                con2.appendChild(clone)
+            }
+        },
+        error: function (e) {
+            alert(e)
+        }
+    })
+
+    $('#mess_sub').click(function () {
+        let content = $('#mess_input').val()
+        let data = {}
+        data['message'] = content
+        $.ajax({
+            type: "POST",
+            url: "/api/subMess",
+            cache: false,
+            timeout: 600000,
+            data: JSON.stringify(data),
+            contentType: "application/json",
+            success: function () {
+                window.location.reload()
+            },
+            error: function (e) {
+                alert('no')
+                alert(e)
+            }
+        })
+
+    })
 </script>
 </html>

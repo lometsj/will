@@ -2,6 +2,7 @@ package com.lome.will.demo.Controller;
 
 import com.lome.will.demo.Entity.User;
 import com.lome.will.demo.Entity.Will;
+import com.lome.will.demo.Service.NoService;
 import com.lome.will.demo.Service.UserService;
 import com.lome.will.demo.Service.WillService;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
@@ -28,6 +29,9 @@ public class webController {
     @Autowired
     WillService willService;
 
+    @Autowired
+    NoService noService;
+
     private String UPLOAD_FOLDER = "/tmp/";
 
 
@@ -52,9 +56,19 @@ public class webController {
 
     @GetMapping("/view")
     public String view(HttpServletRequest request, HttpServletResponse response) throws Exception{
+        String userName = request.getSession().getAttribute("user").toString();
         if(request.getSession().getAttribute("user") == null)
             response.sendRedirect("/");
+        User user = userService.getUserByName(userName);
+        if(user.getType().equals("notary") && !noService.hasInfo(userName)){
+            response.sendRedirect("/info");
+        }
         return "/willView.html";
+    }
+
+    @GetMapping("/info")
+    public String info(){
+        return "/noInfo.html";
     }
 
     @GetMapping("/create")
